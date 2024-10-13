@@ -27,7 +27,7 @@ public class AutenticacionController {
 
         try {
 
-            Thread.sleep(Duration.ofSeconds(5));
+            Thread.sleep(Duration.ofSeconds(2));
             String[] datosUsuario = autenticacionService.validarUsuario(loginRequestDTO);
             System.out.println("Respuesta backend: " + Arrays.toString(datosUsuario));
 
@@ -44,7 +44,7 @@ public class AutenticacionController {
     @PostMapping("/logout")
     public LogoutResponseDTO logout(@RequestBody LogoutRequestDTO logoutRequestDTO) {
         try {
-            Thread.sleep(Duration.ofSeconds(5));
+            Thread.sleep(Duration.ofSeconds(2));
             Date fechaLogout = autenticacionService.cerrarSesionUsuario(logoutRequestDTO);
             System.out.println("Respuesta backend: " + fechaLogout);
 
