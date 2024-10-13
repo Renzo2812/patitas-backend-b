@@ -5,11 +5,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import pe.edu.cibertec.patitas_backend_b.dto.LoginRequestDTO;
+import pe.edu.cibertec.patitas_backend_b.dto.LogoutRequestDTO;
 import pe.edu.cibertec.patitas_backend_b.service.AutenticacionService;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.Date;
 
 @Service
 public class AuntenticacionServiceImpl implements AutenticacionService {
@@ -47,5 +54,35 @@ public class AuntenticacionServiceImpl implements AutenticacionService {
         }
 
         return datosUsuario;
+    }
+
+    @Override
+    public Date cerrarSesionUsuario(LogoutRequestDTO logoutRequestDTO) throws IOException {
+        Date fechaLogout = null;
+
+        Resource resource = resourceLoader.getResource("classpath:auditoria.txt");
+        Path rutaArchivo = Paths.get(resource.getURI());
+
+        try(BufferedWriter bw = Files.newBufferedWriter(rutaArchivo, StandardOpenOption.APPEND)){
+
+            fechaLogout = new Date();
+
+            StringBuilder sb = new StringBuilder();
+            sb.append(logoutRequestDTO.tipoDocumento());
+            sb.append(";");
+            sb.append(logoutRequestDTO.numeroDocumento());
+            sb.append(";");
+            sb.append(fechaLogout);
+
+            //Escribrir la linea
+            bw.write(sb.toString());
+            bw.newLine();
+            System.out.println(sb.toString());
+        } catch (IOException e) {
+
+            fechaLogout = null;
+            throw new IOException(e);
+        }
+        return fechaLogout;
     }
 }
